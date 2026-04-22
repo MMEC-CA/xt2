@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rock Paper Scissors</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 1rem; }
+  h1 { font-size: 2rem; margin-bottom: 0.25rem; }
+  .subtitle { color: #94a3b8; margin-bottom: 2rem; font-size: 0.9rem; }
+  .choices { display: flex; gap: 1rem; margin-bottom: 2rem; }
+  .btn { background: #1e293b; border: 2px solid #334155; border-radius: 1rem; padding: 1.2rem 1.6rem; font-size: 2.5rem; cursor: pointer; transition: all 0.15s; }
+  .btn:hover { border-color: #6366f1; background: #1e3a5f; transform: translateY(-2px); }
+  .btn:active { transform: translateY(0); }
+  .result-box { background: #1e293b; border: 1px solid #334155; border-radius: 1rem; padding: 1.5rem 2rem; text-align: center; min-width: 260px; min-height: 120px; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center; }
+  .vs { display: flex; gap: 1.5rem; align-items: center; font-size: 2rem; }
+  .vs span { font-size: 0.85rem; color: #94a3b8; }
+  .outcome { font-size: 1.4rem; font-weight: 700; }
+  .win { color: #4ade80; }
+  .lose { color: #f87171; }
+  .draw { color: #facc15; }
+  .score { color: #94a3b8; font-size: 0.85rem; margin-top: 1.5rem; }
+  .hint { color: #475569; font-size: 0.8rem; margin-top: 0.75rem; }
+</style>
+</head>
+<body>
+<h1>Rock Paper Scissors</h1>
+<p class="subtitle">REST-powered game &mdash; pick your move</p>
+<div class="choices">
+  <button class="btn" onclick="play('rock')" title="Rock">🪨</button>
+  <button class="btn" onclick="play('paper')" title="Paper">📄</button>
+  <button class="btn" onclick="play('scissors')" title="Scissors">✂️</button>
+</div>
+<div class="result-box" id="result">
+  <div style="color:#475569">Choose to start</div>
+</div>
+<div class="score" id="score"></div>
+<div class="hint">API: <code>POST /api/game/rps</code> &nbsp;·&nbsp; body: <code>{"choice":"rock"}</code></div>
+
+<script>
+const EMOJI = { rock: '🪨', paper: '📄', scissors: '✂️' };
+let wins = 0, losses = 0, draws = 0;
+
+async function play(choice) {
+  const res = await fetch('/api/game/rps', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ choice })
+  });
+  const data = await res.json();
+  const box = document.getElementById('result');
+  const outcomeClass = data.result;
+  const outcomeText = data.result === 'win' ? 'You win!' : data.result === 'lose' ? 'You lose.' : "It's a draw!";
+  if (data.result === 'win') wins++;
+  else if (data.result === 'lose') losses++;
+  else draws++;
+  box.innerHTML = `
+    <div class="vs">
+      <div>${EMOJI[data.player]}<br><span>You</span></div>
+      <div style="font-size:1rem;color:#475569">vs</div>
+      <div>${EMOJI[data.computer]}<br><span>CPU</span></div>
+    </div>
+    <div class="outcome ${outcomeClass}">${outcomeText}</div>
+  `;
+  document.getElementById('score').textContent = `W ${wins}  ·  L ${losses}  ·  D ${draws}`;
+}
+</script>
+</body>
+</html>

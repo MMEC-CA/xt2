@@ -3,291 +3,345 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Singing Girl</title>
+<title>Singing Girl 🎵</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: linear-gradient(180deg, #1a0533 0%, #3b0764 50%, #6d28d9 100%);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
-    overflow: hidden;
-  }
+* { margin:0; padding:0; box-sizing:border-box; }
 
-  /* Stars */
-  .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-  .star {
-    position: absolute;
-    background: white;
-    border-radius: 50%;
-    animation: twinkle 2s infinite alternate;
-  }
-  @keyframes twinkle { from { opacity: 0.2; transform: scale(1); } to { opacity: 1; transform: scale(1.4); } }
+body {
+  background: linear-gradient(160deg, #ff9de2 0%, #ffc0d9 40%, #c8a8ff 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  overflow: hidden;
+}
 
-  /* Stage */
-  .stage {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
+/* BG circles */
+.bubble {
+  position: fixed;
+  border-radius: 50%;
+  opacity: 0.18;
+  animation: floatbub linear infinite;
+}
+@keyframes floatbub {
+  0%   { transform: translateY(110vh) scale(1); }
+  100% { transform: translateY(-20vh) scale(1.1); }
+}
 
-  /* Girl SVG container */
-  .girl-wrap {
-    animation: sway 1s ease-in-out infinite alternate;
-    transform-origin: bottom center;
-    filter: drop-shadow(0 10px 30px rgba(200,100,255,0.5));
-  }
-  @keyframes sway { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+/* Stage floor */
+.floor {
+  width: 340px; height: 22px;
+  background: linear-gradient(90deg, #e879f9, #a855f7, #e879f9);
+  border-radius: 50%;
+  margin-top: -10px;
+  box-shadow: 0 0 40px #e879f9;
+}
 
-  /* Mouth open/close inside SVG */
-  .mouth { animation: sing 0.4s ease-in-out infinite alternate; transform-origin: center; }
-  @keyframes sing { from { d: path("M 82 118 Q 100 125 118 118"); } to { d: path("M 82 118 Q 100 135 118 118"); } }
+/* Spotlight */
+.spotlight {
+  position: fixed;
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 160px solid transparent;
+  border-right: 160px solid transparent;
+  border-top: 420px solid rgba(255,255,180,0.12);
+  pointer-events: none;
+}
 
-  /* Hair bounce */
-  .hair { animation: hairbounce 1s ease-in-out infinite alternate; transform-origin: 100px 60px; }
-  @keyframes hairbounce { from { transform: scaleX(1); } to { transform: scaleX(1.03); } }
+/* Girl container */
+.scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
 
-  /* Arms */
-  .arm-left  { animation: armleft  1s ease-in-out infinite alternate; transform-origin: 70px 170px; }
-  .arm-right { animation: armright 1s ease-in-out infinite alternate; transform-origin: 130px 170px; }
-  @keyframes armleft  { from { transform: rotate(-15deg); } to { transform: rotate(15deg); } }
-  @keyframes armright { from { transform: rotate(15deg);  } to { transform: rotate(-15deg); } }
+.girl {
+  animation: sway 0.9s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+  cursor: pointer;
+  filter: drop-shadow(0 6px 24px rgba(168,85,247,0.45));
+}
+@keyframes sway { from { transform: rotate(-5deg) translateX(-4px); } to { transform: rotate(5deg) translateX(4px); } }
 
-  /* Dress */
-  .dress { animation: dressbounce 1s ease-in-out infinite alternate; transform-origin: 100px 220px; }
-  @keyframes dressbounce { from { transform: scaleX(1); } to { transform: scaleX(1.04); } }
+/* Lyrics bubble */
+.lyrics-wrap {
+  position: relative;
+  margin-top: 18px;
+}
+.lyrics-bubble {
+  background: white;
+  border-radius: 28px;
+  padding: 14px 28px;
+  font-size: 1.35rem;
+  color: #7c3aed;
+  text-align: center;
+  min-width: 300px;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(168,85,247,0.3), 0 0 0 3px #e879f9;
+  position: relative;
+  animation: bubblein 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes bubblein { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.lyrics-bubble::after {
+  content: '';
+  position: absolute;
+  top: -18px; left: 50%;
+  transform: translateX(-50%);
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-bottom: 20px solid white;
+}
 
-  /* Lyrics box */
-  .lyrics-box {
-    background: rgba(255,255,255,0.1);
-    border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 20px;
-    padding: 16px 32px;
-    text-align: center;
-    backdrop-filter: blur(6px);
-    min-width: 320px;
-    min-height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 30px rgba(200,100,255,0.3);
-  }
-  .lyric-line {
-    color: #fff;
-    font-size: 1.4rem;
-    text-shadow: 0 0 12px #f0abfc, 0 0 3px #fff;
-    animation: lyricpop 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
-    letter-spacing: 1px;
-  }
-  @keyframes lyricpop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+/* Floating notes */
+.note {
+  position: fixed;
+  font-size: 1.8rem;
+  pointer-events: none;
+  animation: notefloat 2s ease-out forwards;
+  z-index: 10;
+}
+@keyframes notefloat {
+  0%   { opacity: 1; transform: translate(0,0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx), -160px) rotate(30deg) scale(1.5); }
+}
 
-  /* Floating notes */
-  .note {
-    position: absolute;
-    font-size: 1.6rem;
-    color: #f0abfc;
-    pointer-events: none;
-    animation: floatnote 2.5s ease-in forwards;
-  }
-  @keyframes floatnote {
-    0%   { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
-    100% { opacity: 0; transform: translateY(-140px) scale(1.4) rotate(20deg); }
-  }
-
-  /* Title */
-  .title {
-    color: #f0abfc;
-    font-size: 2rem;
-    text-shadow: 0 0 20px #a855f7;
-    margin-bottom: 8px;
-    letter-spacing: 3px;
-  }
+/* Stars */
+.star {
+  position: fixed;
+  font-size: 1.2rem;
+  animation: startwinkle 1.5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes startwinkle { from { opacity:0.3; transform:scale(0.8); } to { opacity:1; transform:scale(1.2); } }
 </style>
 </head>
 <body>
 
-<!-- Stars -->
-<div class="stars" id="stars"></div>
+<div class="spotlight"></div>
+<div id="bubbles"></div>
+<div id="stars-wrap"></div>
 
-<div class="stage">
-  <div class="title">♪ La La La ♪</div>
-
-  <!-- Cartoon Girl SVG -->
-  <div class="girl-wrap" id="girl">
-    <svg width="200" height="320" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
+<div class="scene">
+  <div class="girl" id="girl">
+    <svg width="220" height="340" viewBox="0 0 220 340" xmlns="http://www.w3.org/2000/svg">
 
       <!-- Shadow -->
-      <ellipse cx="100" cy="315" rx="50" ry="8" fill="rgba(0,0,0,0.3)"/>
+      <ellipse cx="110" cy="334" rx="60" ry="9" fill="rgba(100,0,100,0.2)"/>
 
-      <!-- Hair back -->
-      <ellipse class="hair" cx="100" cy="72" rx="46" ry="50" fill="#7c3aed"/>
+      <!-- DRESS -->
+      <polygon points="72,185 148,185 175,310 45,310" fill="#f472b6"/>
+      <!-- Dress shine -->
+      <polygon points="72,185 110,195 148,185 158,230 62,230" fill="#f9a8d4"/>
+      <!-- Dress dots -->
+      <circle cx="92" cy="245" r="5" fill="#fde68a" opacity="0.9"/>
+      <circle cx="128" cy="255" r="4" fill="#fde68a" opacity="0.9"/>
+      <circle cx="110" cy="270" r="5" fill="#fde68a" opacity="0.9"/>
+      <circle cx="80" cy="268" r="3" fill="#fde68a" opacity="0.7"/>
+      <circle cx="138" cy="240" r="3" fill="#fde68a" opacity="0.7"/>
+      <!-- Belt -->
+      <rect x="66" y="218" width="88" height="14" rx="7" fill="#be185d"/>
+      <circle cx="110" cy="225" r="7" fill="#fbbf24"/>
+      <circle cx="110" cy="225" r="4" fill="#fde68a"/>
 
-      <!-- Neck -->
-      <rect x="90" y="140" width="20" height="25" rx="5" fill="#fcd34d"/>
+      <!-- Legs -->
+      <rect x="86" y="305" width="16" height="28" rx="8" fill="#fde68a"/>
+      <rect x="118" y="305" width="16" height="28" rx="8" fill="#fde68a"/>
+      <!-- Shoes -->
+      <ellipse cx="94" cy="334" rx="16" ry="9" fill="#7c3aed"/>
+      <ellipse cx="126" cy="334" rx="16" ry="9" fill="#7c3aed"/>
+      <ellipse cx="94" cy="331" rx="11" ry="6" fill="#a855f7"/>
+      <ellipse cx="126" cy="331" rx="11" ry="6" fill="#a855f7"/>
 
-      <!-- Dress / body -->
-      <g class="dress">
-        <polygon points="65,165 135,165 155,280 45,280" fill="#ec4899"/>
-        <polygon points="65,165 100,175 135,165 150,200 50,200" fill="#f472b6"/>
-        <!-- Belt -->
-        <rect x="60" y="200" width="80" height="12" rx="6" fill="#be185d"/>
-        <!-- Dress sparkles -->
-        <circle cx="85" cy="220" r="3" fill="#fde68a" opacity="0.8"/>
-        <circle cx="115" cy="235" r="2" fill="#fde68a" opacity="0.8"/>
-        <circle cx="100" cy="250" r="3" fill="#fde68a" opacity="0.8"/>
-        <circle cx="75" cy="248" r="2" fill="#fde68a" opacity="0.6"/>
-        <circle cx="125" cy="218" r="2" fill="#fde68a" opacity="0.6"/>
+      <!-- LEFT ARM (with mic) -->
+      <g style="animation: armleft 0.9s ease-in-out infinite alternate; transform-origin: 72px 185px;">
+        <rect x="44" y="182" width="20" height="58" rx="10" fill="#fde68a"/>
+        <circle cx="54" cy="244" r="11" fill="#fde68a"/>
+        <!-- Mic handle -->
+        <rect x="49" y="252" width="11" height="26" rx="4" fill="#9ca3af"/>
+        <!-- Mic head -->
+        <ellipse cx="54" cy="250" rx="12" ry="14" fill="#374151"/>
+        <ellipse cx="54" cy="250" rx="8" ry="9" fill="#4b5563"/>
+        <!-- Mic shine -->
+        <ellipse cx="50" cy="245" rx="3" ry="4" fill="rgba(255,255,255,0.25)"/>
+      </g>
+      <style>
+        @keyframes armleft  { from { transform: rotate(-18deg); } to { transform: rotate(10deg); } }
+        @keyframes armright { from { transform: rotate(18deg);  } to { transform: rotate(-10deg); } }
+      </style>
+
+      <!-- RIGHT ARM -->
+      <g style="animation: armright 0.9s ease-in-out infinite alternate; transform-origin: 148px 185px;">
+        <rect x="156" y="182" width="20" height="58" rx="10" fill="#fde68a"/>
+        <circle cx="166" cy="244" r="11" fill="#fde68a"/>
       </g>
 
-      <!-- Left arm -->
-      <g class="arm-left">
-        <rect x="35" y="165" width="18" height="55" rx="9" fill="#fcd34d"/>
-        <!-- Hand -->
-        <circle cx="44" cy="226" r="10" fill="#fcd34d"/>
-        <!-- Mic -->
-        <rect x="39" y="230" width="10" height="22" rx="3" fill="#9ca3af"/>
-        <circle cx="44" cy="228" r="8" fill="#374151"/>
-        <circle cx="44" cy="228" r="5" fill="#6b7280"/>
-      </g>
+      <!-- NECK -->
+      <rect x="100" y="153" width="20" height="30" rx="8" fill="#fde68a"/>
 
-      <!-- Right arm -->
-      <g class="arm-right">
-        <rect x="147" y="165" width="18" height="55" rx="9" fill="#fcd34d"/>
-        <circle cx="156" cy="226" r="10" fill="#fcd34d"/>
-      </g>
+      <!-- HEAD -->
+      <ellipse cx="110" cy="108" rx="50" ry="53" fill="#fde68a"/>
 
-      <!-- Head -->
-      <ellipse cx="100" cy="95" rx="42" ry="45" fill="#fcd34d"/>
+      <!-- HAIR BACK -->
+      <ellipse cx="110" cy="98" rx="53" ry="57" fill="#dc2626"/>
+      <!-- Hair covers bottom -->
+      <ellipse cx="110" cy="108" rx="50" ry="53" fill="#fde68a"/>
 
-      <!-- Hair front / bangs -->
-      <path class="hair" d="M58,75 Q65,40 100,38 Q135,40 142,75 Q130,60 100,58 Q70,60 58,75Z" fill="#7c3aed"/>
-      <!-- Side curls -->
-      <ellipse cx="58" cy="100" rx="10" ry="18" fill="#7c3aed" transform="rotate(-10,58,100)"/>
-      <ellipse cx="142" cy="100" rx="10" ry="18" fill="#7c3aed" transform="rotate(10,142,100)"/>
-      <!-- Hair highlight -->
-      <ellipse cx="88" cy="60" rx="12" ry="6" fill="#a855f7" opacity="0.5" transform="rotate(-15,88,60)"/>
+      <!-- HAIR FRONT + SIDES -->
+      <!-- Bangs -->
+      <path d="M60,90 Q65,42 110,38 Q155,42 160,90 Q148,65 110,63 Q72,65 60,90Z" fill="#dc2626"/>
+      <!-- Side hair left -->
+      <ellipse cx="62" cy="115" rx="13" ry="25" fill="#dc2626" transform="rotate(-8,62,115)"/>
+      <!-- Side hair right -->
+      <ellipse cx="158" cy="115" rx="13" ry="25" fill="#dc2626" transform="rotate(8,158,115)"/>
+      <!-- Long hair strands -->
+      <path d="M62,128 Q50,160 55,185" stroke="#dc2626" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <path d="M158,128 Q170,160 165,185" stroke="#dc2626" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <!-- Hair shine -->
+      <ellipse cx="95" cy="62" rx="14" ry="6" fill="#ef4444" opacity="0.5" transform="rotate(-15,95,62)"/>
 
-      <!-- Eyes -->
+      <!-- Hair bow -->
+      <!-- Left part -->
+      <ellipse cx="80" cy="56" rx="16" ry="11" fill="#fbbf24" transform="rotate(-30,80,56)"/>
+      <!-- Right part -->
+      <ellipse cx="108" cy="48" rx="16" ry="11" fill="#fbbf24" transform="rotate(30,108,48)"/>
+      <!-- Center -->
+      <circle cx="94" cy="52" r="9" fill="#f59e0b"/>
+      <circle cx="94" cy="52" r="5" fill="#fde68a"/>
+
+      <!-- EYES -->
       <!-- Left eye -->
-      <ellipse cx="82" cy="92" rx="10" ry="11" fill="white"/>
-      <ellipse cx="82" cy="94" rx="6" ry="7" fill="#1e3a5f"/>
-      <circle  cx="82" cy="93" r="4" fill="#1d4ed8"/>
-      <circle  cx="82" cy="92" r="2" fill="black"/>
-      <circle  cx="85" cy="90" r="1.5" fill="white"/>
-      <!-- Left lashes -->
-      <line x1="72" y1="85" x2="68" y2="80" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
-      <line x1="78" y1="83" x2="76" y2="77" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
-      <line x1="84" y1="83" x2="84" y2="77" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="88" cy="102" rx="12" ry="13" fill="white"/>
+      <ellipse cx="88" cy="104" rx="7" ry="8" fill="#1e40af"/>
+      <circle  cx="88" cy="103" r="4.5" fill="#1e3a8a"/>
+      <circle  cx="88" cy="103" r="2.5" fill="black"/>
+      <circle  cx="91" cy="100" r="2"   fill="white"/>
+      <!-- Left lashes top -->
+      <line x1="76" y1="93" x2="71" y2="87" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="83" y1="90" x2="80" y2="83" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="90" y1="90" x2="90" y2="83" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="97" y1="92" x2="100" y2="86" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Left eye shine (blinking animation) -->
 
       <!-- Right eye -->
-      <ellipse cx="118" cy="92" rx="10" ry="11" fill="white"/>
-      <ellipse cx="118" cy="94" rx="6" ry="7" fill="#1e3a5f"/>
-      <circle  cx="118" cy="93" r="4" fill="#1d4ed8"/>
-      <circle  cx="118" cy="92" r="2" fill="black"/>
-      <circle  cx="121" cy="90" r="1.5" fill="white"/>
-      <!-- Right lashes -->
-      <line x1="116" y1="83" x2="116" y2="77" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
-      <line x1="122" y1="83" x2="124" y2="77" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
-      <line x1="128" y1="85" x2="132" y2="80" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="132" cy="102" rx="12" ry="13" fill="white"/>
+      <ellipse cx="132" cy="104" rx="7" ry="8" fill="#1e40af"/>
+      <circle  cx="132" cy="103" r="4.5" fill="#1e3a8a"/>
+      <circle  cx="132" cy="103" r="2.5" fill="black"/>
+      <circle  cx="135" cy="100" r="2"   fill="white"/>
+      <!-- Right lashes top -->
+      <line x1="120" y1="92" x2="117" y2="86" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="127" y1="90" x2="125" y2="83" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="134" y1="90" x2="134" y2="83" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="141" y1="93" x2="145" y2="87" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
 
-      <!-- Rosy cheeks -->
-      <ellipse cx="68" cy="108" rx="10" ry="7" fill="#f9a8d4" opacity="0.6"/>
-      <ellipse cx="132" cy="108" rx="10" ry="7" fill="#f9a8d4" opacity="0.6"/>
+      <!-- Blush -->
+      <ellipse cx="74" cy="118" rx="12" ry="8" fill="#fca5a5" opacity="0.65"/>
+      <ellipse cx="146" cy="118" rx="12" ry="8" fill="#fca5a5" opacity="0.65"/>
 
       <!-- Nose -->
-      <ellipse cx="100" cy="108" rx="4" ry="3" fill="#f59e0b" opacity="0.6"/>
+      <path d="M107,120 Q110,124 113,120" stroke="#f59e0b" stroke-width="2" fill="none" stroke-linecap="round"/>
 
-      <!-- Mouth (open/singing) -->
-      <path class="mouth" d="M 82 118 Q 100 130 118 118" stroke="#be185d" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M 84 120 Q 100 136 116 120 Q 100 142 84 120Z" fill="#be185d"/>
-      <ellipse cx="100" cy="128" rx="8" ry="5" fill="#9f1239"/>
-      <!-- Teeth -->
-      <rect x="88" y="120" width="10" height="6" rx="2" fill="white"/>
-      <rect x="100" y="120" width="10" height="6" rx="2" fill="white"/>
+      <!-- MOUTH – singing open -->
+      <g id="mouth">
+        <path d="M90,133 Q110,145 130,133" stroke="#be185d" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <!-- Inside mouth -->
+        <path d="M92,135 Q110,150 128,135 Q110,162 92,135Z" fill="#be185d"/>
+        <ellipse cx="110" cy="144" rx="10" ry="7" fill="#9f1239"/>
+        <!-- Teeth -->
+        <rect x="97" y="135" width="12" height="8" rx="3" fill="white"/>
+        <rect x="111" y="135" width="12" height="8" rx="3" fill="white"/>
+        <!-- Tongue -->
+        <ellipse cx="110" cy="152" rx="8" ry="5" fill="#f87171"/>
+      </g>
 
-      <!-- Hairband/accessory -->
-      <ellipse cx="72" cy="68" rx="10" ry="10" fill="#fbbf24"/>
-      <ellipse cx="72" cy="68" rx="6" ry="6" fill="#f59e0b"/>
-      <circle  cx="72" cy="68" r="3" fill="#fde68a"/>
-
-      <!-- Feet / shoes -->
-      <ellipse cx="80" cy="285" rx="18" ry="10" fill="#7c3aed"/>
-      <ellipse cx="120" cy="285" rx="18" ry="10" fill="#7c3aed"/>
-      <ellipse cx="80" cy="283" rx="14" ry="7" fill="#a855f7"/>
-      <ellipse cx="120" cy="283" rx="14" ry="7" fill="#a855f7"/>
     </svg>
   </div>
 
-  <!-- Lyrics display -->
-  <div class="lyrics-box">
-    <span class="lyric-line" id="lyric">🎵 Loading... 🎵</span>
+  <div class="floor"></div>
+
+  <div class="lyrics-wrap">
+    <div class="lyrics-bubble" id="lbox">
+      <span id="lyric">🎵 La la la...</span>
+    </div>
   </div>
 </div>
 
 <script>
-  // Starfield
-  const starsEl = document.getElementById('stars');
-  for (let i = 0; i < 80; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const sz = Math.random() * 3 + 1;
-    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*2}s;animation-duration:${1.5+Math.random()*2}s`;
-    starsEl.appendChild(s);
-  }
+// Background bubbles
+const bc = document.getElementById('bubbles');
+const colors = ['#f9a8d4','#c4b5fd','#fde68a','#a5f3fc','#bbf7d0'];
+for (let i=0; i<14; i++) {
+  const b = document.createElement('div');
+  b.className = 'bubble';
+  const sz = 40 + Math.random()*120;
+  b.style.cssText = `width:${sz}px;height:${sz}px;background:${colors[i%colors.length]};left:${Math.random()*100}%;bottom:-${sz}px;animation-duration:${6+Math.random()*10}s;animation-delay:${Math.random()*8}s`;
+  bc.appendChild(b);
+}
 
-  // Lyrics
-  const lyrics = [
-    "🎵 La la la, sing with me! 🎵",
-    "✨ Stars are shining bright tonight ✨",
-    "🌙 Under the moonlit sky so wide 🌙",
-    "💜 Dancing to the melody 💜",
-    "🎶 Music fills the whole night air 🎶",
-    "🌟 Every note a bright new dream 🌟",
-    "🎤 Singing loud from deep inside 🎤",
-    "💫 My heart soars on every beat 💫",
-    "🎵 Oh la la, here we go! 🎵",
-    "🌸 Flowers bloom when songs are sung 🌸",
-    "⭐ Reach the high note — don't give up! ⭐",
-    "🎶 La la la la la la la! 🎶",
-  ];
+// Stars
+const sw = document.getElementById('stars-wrap');
+const starEmojis = ['⭐','✨','💫','🌟','⚡'];
+for (let i=0; i<16; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.textContent = starEmojis[i%starEmojis.length];
+  s.style.cssText = `top:${Math.random()*75}%;left:${Math.random()*100}%;animation-delay:${Math.random()*2}s;animation-duration:${1+Math.random()*1.5}s;font-size:${0.8+Math.random()*1.4}rem`;
+  sw.appendChild(s);
+}
 
-  let idx = 0;
-  const lyricEl = document.getElementById('lyric');
+// Lyrics
+const lyrics = [
+  "🎵 La la la, hear me sing! 🎵",
+  "✨ My voice can reach the sky ✨",
+  "💜 Oh oh oh, feel the beat! 💜",
+  "🌈 Colors dance around me now 🌈",
+  "🎤 Microphone, let's go! 🎤",
+  "🌸 Every note is pure and sweet 🌸",
+  "⭐ Shining like a shooting star ⭐",
+  "🎶 Sing it loud, sing it proud! 🎶",
+  "💖 Music fills my heart with joy 💖",
+  "🌙 Under stars I serenade 🌙",
+  "🎵 La la la la la la la! 🎵",
+  "✨ Yeah yeah yeah, let's go! ✨",
+];
 
-  function nextLyric() {
-    lyricEl.style.animation = 'none';
-    lyricEl.offsetHeight; // reflow
-    lyricEl.style.animation = '';
-    lyricEl.className = 'lyric-line';
-    lyricEl.textContent = lyrics[idx % lyrics.length];
-    idx++;
-  }
+let idx = 0;
+const lbox  = document.getElementById('lbox');
+const lyric = document.getElementById('lyric');
 
-  nextLyric();
-  setInterval(nextLyric, 2200);
+function nextLyric() {
+  // Re-trigger animation
+  lbox.style.animation = 'none';
+  lbox.offsetHeight;
+  lbox.style.animation = 'bubblein 0.35s cubic-bezier(0.175,0.885,0.32,1.275)';
+  lyric.textContent = lyrics[idx % lyrics.length];
+  idx++;
+}
+nextLyric();
+setInterval(nextLyric, 2000);
 
-  // Floating music notes
-  const notes = ['♩','♪','♫','♬','🎵','🎶'];
-  const girl = document.getElementById('girl');
+// Floating notes
+const noteChars = ['♩','♪','♫','♬','🎵','🎶','🎤','🎼'];
+const girl = document.getElementById('girl');
 
-  function spawnNote() {
-    const n = document.createElement('div');
-    n.className = 'note';
-    n.textContent = notes[Math.floor(Math.random() * notes.length)];
-    const rect = girl.getBoundingClientRect();
-    n.style.left = (rect.left + 60 + Math.random() * 80) + 'px';
-    n.style.top  = (rect.top  + 20 + Math.random() * 40) + 'px';
-    n.style.animationDuration = (1.8 + Math.random()) + 's';
-    document.body.appendChild(n);
-    setTimeout(() => n.remove(), 2800);
-  }
-
-  setInterval(spawnNote, 500);
+function spawnNote() {
+  const n = document.createElement('div');
+  n.className = 'note';
+  n.textContent = noteChars[Math.floor(Math.random()*noteChars.length)];
+  const r = girl.getBoundingClientRect();
+  n.style.left = (r.left + 50 + Math.random()*120) + 'px';
+  n.style.top  = (r.top  + 30 + Math.random()*50)  + 'px';
+  n.style.setProperty('--dx', (Math.random()*80-40)+'px');
+  n.style.animationDuration = (1.5 + Math.random()*1) + 's';
+  n.style.color = colors[Math.floor(Math.random()*colors.length)];
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 2600);
+}
+setInterval(spawnNote, 420);
 </script>
 </body>
 </html>
